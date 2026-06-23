@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gray Area — AI & Academic Integrity</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --warm: #f0883e;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  /* ── Intro ── */
+  #intro {
+    padding-top: 3rem;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.25em 0.6em;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .intro-body {
+    border-left: 2px solid var(--border);
+    padding-left: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .intro-body p {
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  .intro-body p:last-child { margin-bottom: 0; }
+
+  .intro-body strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .meta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Game Screen ── */
+  #game { display: none; }
+
+  .scenario-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .scenario-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .dot.active { background: var(--accent); }
+  .dot.done { background: var(--green); }
+
+  .scenario-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .scenario-context {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  /* ── Narrative Card ── */
+  .narrative-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    font-size: 0.975rem;
+    min-height: 100px;
+    position: relative;
+  }
+
+  .narrative-card .speaker {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    padding: 0.15em 0.5em;
+    background: rgba(88, 166, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .narrative-card p { margin-bottom: 0.75rem; }
+  .narrative-card p:last-child { margin-bottom: 0; }
+
+  .narrative-card em { color: var(--muted); font-style: italic; }
+
+  .chat-bubble {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border-left: 3px solid var(--accent);
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .chat-bubble.ai {
+    border-left-color: var(--warm);
+    color: var(--muted);
+  }
+
+  /* ── Choices ── */
+  .choices-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .choice-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    color: var(--text);
+    font-size: 0.925rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--accent);
+    background: rgba(88, 166, 255, 0.05);
+    transform: translateX(2px);
+  }
+
+  .choice-btn:active { transform: translateX(0); }
+
+  .choice-letter {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.1);
+    padding: 0.2em 0.45em;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* ── Consequence ── */
+  .consequence-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    font-size: 0.975rem;
+  }
+
+  .consequence-card p { margin-bottom: 0.75rem; }
+  .consequence-card p:last-child { margin-bottom: 0; }
+
+  .outcome-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--mono);
+    padding: 0.3em 0.7em;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .outcome-badge.neutral { background: rgba(139, 148, 158, 0.15); color: var(--muted); }
+  .outcome-badge.good { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .outcome-badge.complicated { background: rgba(240, 136, 62, 0.15); color: var(--warm); }
+  .outcome-badge.bad { background: rgba(248, 81, 73, 0.15); color: var(--red); }
+
+  /* ── Reflection ── */
+  .reflection-card {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .reflection-card .reflection-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .reflection-card .reflection-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+  }
+
+  .reflection-card p {
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .reflection-card p:last-child { margin-bottom: 0; }
+
+  .reflection-card strong { color: var(--text); font-weight: 500; }
+
+  .nav-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  /* ── End Screen ── */
+  #end { display: none; }
+
+  .end-header {
+    padding-top: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .end-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .path-summary {
+    margin: 2rem 0;
+  }
+
+  .path-summary h3 {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .path-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .path-item .scenario-num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    font-weight: 600;
+  }
+
+  .final-thought {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    line-height: 1.8;
+    font-size: 0.975rem;
+    color: var(--muted);
+  }
+
+  .final-thought p { margin-bottom: 0.75rem; }
+  .final-thought p:last-child { margin-bottom: 0; }
+  .final-thought strong { color: var(--text); }
+
+  /* ── Animations ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* ── Divider ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    body { padding: 1.25rem 0.875rem 3rem; }
+    .meta-row { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ INTRO SCREEN ══ -->
+  <section id="intro">
+    <div class="tag">Student Council × AI Integrity</div>
+    <h1>The <span>Gray Area</span></h1>
+    <p class="subtitle">Three scenarios. No obvious answers. About 10 minutes.</p>
+
+    <div class="intro-body">
+      <p>Let's skip the part where we pretend AI doesn't exist.</p>
+      <p>You're going to use it. You probably already have. Most of your teachers use it too. The question isn't <strong>"AI: yes or no?"</strong> — that ship sailed before this school year started.</p>
+      <p>The more interesting question is: <strong>what are you actually trying to get out of school?</strong> And how does the easy route intersect with that?</p>
+      <p>This isn't a quiz with right answers baked in. It's a few scenarios — things that could actually happen to you this year — where you make choices and see where they lead. There are no gotcha moments. No pop-up that says "WRONG! Academic integrity means..." These situations are genuinely complicated, and we think you're smart enough to figure out where your own lines are.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="meta-dot"></div> 3 scenarios</div>
+      <div class="meta-item"><div class="meta-dot"></div> ~10 min</div>
+      <div class="meta-item"><div class="meta-dot"></div> No account required</div>
+      <div class="meta-item"><div class="meta-dot"></div> Runs offline</div>
+    </div>
+
+    <button class="btn-primary" onclick="startGame()">
+      Let's go →
+    </button>
+  </section>
+
+  <!-- ══ GAME SCREEN ══ -->
+  <section id="game">
+    <div class="scenario-header">
+      <div class="scenario-label" id="scenario-label">Scenario 1 of 3</div>
+      <div class="progress-dots">
+        <div class="dot" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+      </div>
+    </div>
+
+    <h2 class="scenario-title" id="scenario-title"></h2>
+    <p class="scenario-context" id="scenario-context"></p>
+
+    <div id="node-content"></div>
+  </section>
+
+  <!-- ══ END SCREEN ══ -->
+  <section id="end">
+    <div class="end-header">
+      <div class="tag">You made it through</div>
+      <h2>So — where do you actually stand?</h2>
+      <p style="color: var(--muted); margin-top: 0.5rem; line-height: 1.6;">
+        Here's the path you took. No score, no grade. Just what you chose.
+      </p>
+    </div>
+
+    <div class="path-summary">
+      <h3>Your choices</h3>
+      <div id="path-list"></div>
+    </div>
+
+    <div class="final-thought">
+      <p><strong>The thing no one says out loud:</strong> AI doesn't make the hard part of school easier. The hard part of school was never the writing — it was figuring out what you actually think. The essay was just the proof of work.</p>
+      <p>AI can absolutely help you learn, organize, and edit. It can also let you skip the uncomfortable stretch of not-knowing-yet. That stretch is where most of the actual learning happens.</p>
+      <p>The fact that you're here, thinking about this, already puts you ahead of "just don't get caught." That's not nothing.</p>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <p style="color: var(--muted); font-size: 0.875rem; margin-bottom: 1rem;">Want to talk through any of this with a teacher, counselor, or the Student Council? That's the point.</p>
+      <button class="btn-ghost" onclick="restartGame()" style="margin-right: 0.5rem;">
+        ↺ Play again with different choices
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const SCENARIOS = [
+  // ══════════════════════════════════════════════
+  // SCENARIO 1: THE OUTLINE
+  // ══════════════════════════════════════════════
+  {
+    id: 'outline',
+    title: '"The Outline"',
+    context: 'Ten-page research paper on the causes of WWI. Due in 48 hours. You\'re staring at a blank doc.',
+    nodes: {
+      start: {
+        narrative: `
+          <p>You've read the chapters. You understand the material — kind of. But every time you try to start writing, you end up rereading your notes instead. Two hours in, you've typed exactly one sentence.</p>
+          <p>Almost without deciding to, you open an AI chatbot and type:</p>
+          <div class="chat-bubble">What were the main causes of WWI?</div>
+          <div class="chat-bubble ai">The causes of WWI are often summarized with the acronym MAIN: Militarism, Alliance Systems, Imperialism, and Nationalism. Additionally, the immediate trigger was the assassination of Archduke Franz Ferdinand in Sarajevo in June 1914...</div>
+          <p>The AI keeps going. It's organized. It's clear. You feel your brain click into place. You were missing a structure, and now you have one.</p>
+          <p><em>Now what?</em></p>
+        `,
+        choices: [
+          { text: 'Close the tab. You get it now — write your own outline from scratch.', next: 'informed_start', letter: 'A' },
+          { text: 'Copy the AI\'s structure into your doc and fill it with your own analysis.', next: 'copy_structure', letter: 'B' },
+          { text: 'Ask the AI to write one full paragraph, just to see what it looks like.', next: 'first_paragraph', letter: 'C' },
+          { text: 'Text your teacher: "Is using AI for outlining okay?" before doing anything.', next: 'ask_teacher', letter: 'D' },
+        ]
+      },
+
+      informed_start: {
+        badge: { type: 'neutral', label: '→ You close the tab' },
+        narrative: `
+          <p>The outline exists in your head now, not in a doc. You write your own structure — some of it matches what the AI said, some doesn't. You catch yourself having opinions about which angle to lead with.</p>
+          <p>The next 48 hours are genuinely hard. Around hour three, something shifts: it stops being <em>the paper</em> and starts being <em>your paper</em>. You know why you organized it the way you did.</p>
+          <p>You turn it in. It's not perfect. You feel okay about it.</p>
+        `,
+        reflection: `
+          <p><strong>What you just did is called priming.</strong> Using AI to activate prior knowledge rather than produce output for you. Probably the most defensible use of the technology in an academic context.</p>
+          <p>Worth asking: would you have been comfortable telling your teacher exactly how you used it? If yes, you probably found a good line.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Closed the tab and wrote from your head'
+      },
+
+      copy_structure: {
+        badge: { type: 'neutral', label: '→ You use the AI\'s structure' },
+        narrative: `
+          <p>You fill in your own analysis under each heading. Real thinking, real writing. The structure isn't yours, but the ideas are.</p>
+          <p>When you get the essay back, your teacher writes: <em>"Strong analysis — I can tell you understand the material. Your structure is a bit textbook, though. Next time, try organizing around your actual argument rather than a list of categories."</em></p>
+          <p>You stare at that comment for a moment. The AI's structure was <em>fine</em>, but it organized the causes the way a Wikipedia article would. Not the way you think about it.</p>
+          <p>You'd outsourced the architecture without realizing that architecture <em>is</em> part of the thinking.</p>
+        `,
+        reflection: `
+          <p>This one's genuinely complicated. <strong>The analysis is yours. The structure isn't.</strong> Most people would say this is acceptable. Your teacher's feedback suggests it cost you something subtler.</p>
+          <p>The question isn't whether you "cheated" — it's whether you ended up understanding WWI through your lens or the AI's lens. Those aren't the same thing.</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Used AI\'s structure, wrote your own analysis'
+      },
+
+      first_paragraph: {
+        badge: { type: 'complicated', label: '→ The first paragraph' },
+        narrative: `
+          <p>The paragraph is good. Objectively well-written. You paste it in.</p>
+          <p>You start writing the second section yourself. But two paragraphs in, you notice your style is drifting — you're writing to match the AI's voice, for consistency. You're writing <em>for</em> the AI's paragraph, not for yourself.</p>
+          <p>By page 3, you've asked for three more. You're mostly editing at this point. You're catching errors, adjusting transitions, adding a sentence here and there.</p>
+          <p>You submit something with your name on it. Parts of it are yours. Parts aren't. You're not totally sure of the ratio anymore.</p>
+        `,
+        choices: [
+          { text: '"Editing is a real skill. This is fine."', next: 'editing_fine', letter: 'A' },
+          { text: '"I should have stopped after that first paragraph."', next: 'editing_regret', letter: 'B' },
+        ]
+      },
+
+      editing_fine: {
+        badge: { type: 'complicated', label: '→ Rationalization or realism?' },
+        narrative: `
+          <p>Here's the thing: editing <em>is</em> a real skill. Professional writers have editors. Executives have ghostwriters. The line between "writing" and "heavily editing AI output" is genuinely blurry.</p>
+          <p>Your teacher grades the paper. It gets a B+. No flag. The teacher's comments suggest they think it's competent but impersonal — "doesn't feel like your voice."</p>
+          <p>You got the grade. You can move on. But you also know something your grade doesn't reflect: you're not sure you'd do well on a timed in-class essay on the same topic. That gap is real, even if it doesn't show up anywhere.</p>
+        `,
+        reflection: `
+          <p>There's no gotcha here. <strong>The rationalization might even be correct.</strong> What's worth sitting with: the grade measures the output. It doesn't measure whether you built the knowledge.</p>
+          <p>At some point — a test, a college course, a job — the gap between what you produced and what you actually know tends to surface. Usually at a bad time.</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Let AI write most of it; justified it as editing'
+      },
+
+      editing_regret: {
+        badge: { type: 'neutral', label: '→ Honest reflection' },
+        narrative: `
+          <p>You don't undo it. The paper's done. But you sit with the discomfort.</p>
+          <p>Next paper, you give yourself a rule: AI for understanding the topic, zero AI for sentences. It's more annoying. The first draft is worse. You still get an 88, which is lower than your AI-assisted B+.</p>
+          <p>But when your teacher asks the class to discuss the economic roots of WWI in a Socratic seminar, you actually have something to say. You're not pulling from an AI's framework. You have your own take.</p>
+        `,
+        reflection: `
+          <p>Noticing that you crossed a line — and adjusting — is different from never crossing it. <strong>The second behavior matters more than the first mistake.</strong></p>
+          <p>Most adults will tell you they learned more from classes they struggled through than ones where everything came easily. That's not a coincidence.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Used AI for most of the writing; reflected on it later'
+      },
+
+      ask_teacher: {
+        badge: { type: 'good', label: '→ You text your teacher first' },
+        narrative: `
+          <p>Your teacher responds within the hour — apparently they were still grading. "Great question. Using AI to understand a topic is fine — that's basically what textbooks and search engines are for. Using AI to structure <em>your</em> argument is more complicated. Come talk to me before class."</p>
+          <p>You have that conversation. Your teacher draws a distinction between <em>AI as a tool for understanding</em> versus <em>AI as a tool for producing</em>, and admits — somewhat surprisingly — that the line isn't always obvious even to them.</p>
+          <p>You go into the paper with a clearer sense of what's yours to figure out. The outline you write is yours. The thesis is yours. You actually end up enjoying the paper more because you're not second-guessing every sentence.</p>
+        `,
+        reflection: `
+          <p>The ask-first approach is almost always underrated. <strong>Teachers generally want to say yes</strong> — what they're trying to prevent is work that isn't yours showing up with your name on it.</p>
+          <p>Asking in advance converts a gray area into a green light — or gives you a chance to negotiate what "using AI" actually means in that class.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Asked the teacher for clarification first'
+      },
+    }
+  },
+
+  // ══════════════════════════════════════════════
+  // SCENARIO 2: THE GROUP CHAT
+  // ══════════════════════════════════════════════
+  {
+    id: 'group',
+    title: '"The Group Chat"',
+    context: 'Group project on climate policy. Three people, shared doc, deadline 8am tomorrow. You log in at 11pm.',
+    nodes: {
+      start: {
+        narrative: `
+          <p>You open the shared Google Doc to add your section. Your section on carbon markets is done — solid, in your own words. You scroll to check the overall flow.</p>
+          <p>You get to your teammate Alex's section on international agreements. Three dense paragraphs. Zero typos. Sophisticated vocabulary and a weirdly passive sentence structure. You've known Alex since 8th grade. This doesn't sound like Alex.</p>
+          <p>You copy a sentence and start to paste it into a Google search. You don't actually need to finish — you know.</p>
+          <p>The paper is due in 9 hours. What do you do?</p>
+        `,
+        choices: [
+          { text: 'Leave it. Alex made their choice; you made yours. Not your problem.', next: 'leave_it', letter: 'A' },
+          { text: 'Text Alex: "Hey, this section looks different from your usual writing. Everything okay?"', next: 'text_alex', letter: 'B' },
+          { text: 'Delete Alex\'s section. Leave a comment: "rewrote this, tell me if you hate it."', next: 'delete_section', letter: 'C' },
+          { text: 'Email your teacher tonight to explain the situation.', next: 'email_teacher', letter: 'D' },
+        ]
+      },
+
+      leave_it: {
+        badge: { type: 'bad', label: '→ You leave it' },
+        narrative: `
+          <p>You add your section, close the laptop.</p>
+          <p>Two weeks later, you get a 71 on the project. The teacher's comment: <em>"One section appears to have been AI-generated. Group penalty applied."</em></p>
+          <p>The whole group.</p>
+          <p>You're furious at Alex. But you sit with it for a moment: you knew. At 11pm, you knew. You made a choice — you just made it by not choosing.</p>
+          <p>Alex apologizes in the group chat with the weakest "sorry guys" you've ever seen. The other teammate, Jordan, isn't speaking to either of you.</p>
+        `,
+        reflection: `
+          <p>There's a specific kind of complicity in knowing and saying nothing. <strong>It's not the same as doing it</strong> — but "I didn't do it" and "I didn't stop it when I could have" are different defenses.</p>
+          <p>The question isn't whether you were technically at fault. It's whether you were a good teammate — and a good friend to Alex, who probably knew it was wrong too and could have used a nudge.</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Left Alex\'s AI section alone — group got penalized'
+      },
+
+      text_alex: {
+        badge: { type: 'complicated', label: '→ You text Alex' },
+        narrative: `
+          <div class="chat-bubble">hey — your section looks different from how you usually write. everything okay?</div>
+          <div class="chat-bubble ai">oh god. is it that obvious</div>
+          <div class="chat-bubble">...yeah</div>
+          <div class="chat-bubble ai">I've had the worst week. my parents are fighting and I just. I don't know. I panicked</div>
+          <p>You end up writing Alex's section for them. It takes you 45 minutes. The section is worse than the AI's version — you're not an expert on international agreements. But it's real.</p>
+          <p>The project gets a B. The teacher comments that the sections feel uneven. Alex is grateful, then awkward about it, then normal again after a few weeks.</p>
+          <p>You helped a friend. You also did something ethically complicated. Both things are true.</p>
+        `,
+        reflection: `
+          <p>You covered for Alex. That's a friend thing to do. It's also worth asking: <strong>did it actually help Alex?</strong> They didn't have to face the consequence of a bad decision. They also didn't get to learn from it.</p>
+          <p>Sometimes protecting people from consequences teaches them that someone else will always clean it up. Whether that's "helping" is a harder question than it looks.</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Texted Alex; ended up writing their section for them'
+      },
+
+      delete_section: {
+        badge: { type: 'complicated', label: '→ You rewrite it' },
+        narrative: `
+          <p>You delete Alex's section and stay up until 1am rewriting it from your notes and the shared research folder. It's not your best work but it's real.</p>
+          <p>In the morning, Alex sees the comment and texts: "wait what happened to my section??"</p>
+          <p>You explain. Alex is weirdly defensive at first, then apologetic.</p>
+          <p>The project gets an A-. The teacher says it's well-researched. No one mentions what happened at 11pm. You're exhausted and slightly resentful.</p>
+          <p>Jordan finds out later what you did and thanks you. "You basically saved all of us."</p>
+        `,
+        reflection: `
+          <p>You solved the immediate problem. <strong>You also took on Alex's consequences</strong> — the exhaustion, the risk, the labor. Alex got away with it because you fixed it.</p>
+          <p>There's a question here about whether you did that for the group, or for yourself, or for Alex — and whether those are actually different things. Also: would you do it again?</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Stayed up rewriting Alex\'s section; group got an A-'
+      },
+
+      email_teacher: {
+        badge: { type: 'complicated', label: '→ You email the teacher' },
+        narrative: `
+          <p>You write a careful email: you noticed a section that doesn't look like your teammate's usual writing, you're not sure what to do, you wanted to flag it before submitting.</p>
+          <p>Your teacher reads it at 6am and contacts Alex before class. The whole group gets a 24-hour extension. Alex rewrites the section. Your teacher asks to meet with Alex separately.</p>
+          <p>Alex finds out you emailed. It's bad. Really bad, for a while. Alex calls it a "betrayal" in a way that makes you wonder if you were wrong. Jordan, on the other hand, quietly thanks you.</p>
+          <p>The project gets a B+. The situation with Alex takes about a month to stop being weird.</p>
+        `,
+        reflection: `
+          <p>You did the thing that was most clearly "right" by the rules — and it cost you socially in the short term. <strong>That's genuinely hard.</strong> Rules that are easy to follow when there's no cost aren't really being tested.</p>
+          <p>The harder question isn't whether you were right. It's whether Alex's anger at you is something you can sit with — and whether that changes what you'd do next time.</p>
+        `,
+        reflectionType: 'complicated',
+        choiceLabel: 'Emailed the teacher; Alex found out and was furious'
+      },
+    }
+  },
+
+  // ══════════════════════════════════════════════
+  // SCENARIO 3: FLAGGED
+  // ══════════════════════════════════════════════
+  {
+    id: 'flagged',
+    title: '"Flagged"',
+    context: 'Your English teacher pulls you aside. Your Hamlet essay has been flagged by an AI detection tool. 81% AI-generated, it says.',
+    nodes: {
+      start: {
+        narrative: `
+          <p>You wrote this essay. You know you wrote it — three days of actual work, two full drafts, a thesis you're kind of proud of. You used AI to quiz yourself on the themes beforehand ("give me three hard questions about Hamlet's psychology") but the writing is completely yours.</p>
+          <p>Your teacher, Mr. K, is being fair about it. He says he's not accusing you, just needs to have a conversation. But there's a consequence on the table if a policy violation is found.</p>
+          <p>You're confused, then annoyed, then nervous — in that order.</p>
+          <p>How do you respond?</p>
+        `,
+        choices: [
+          { text: 'Show him your process: notes, drafts, the AI quiz session — all of it.', next: 'show_process', letter: 'A' },
+          { text: 'Push back on the tool: "AI detectors are notoriously inaccurate. This isn\'t valid evidence."', next: 'defend_tool', letter: 'B' },
+          { text: 'Explain that you used AI for studying — and be specific about the distinction.', next: 'explain_distinction', letter: 'C' },
+          { text: 'Ask what happens next before you say anything else.', next: 'ask_process', letter: 'D' },
+        ]
+      },
+
+      show_process: {
+        badge: { type: 'good', label: '→ You show your receipts' },
+        narrative: `
+          <p>You open your Drive on your phone. There's a doc with scratch notes from three days ago, timestamps visible. A second doc with an ugly first draft. And a chat history from your AI quiz session — clearly different from writing: just questions and your typed-out answers as practice.</p>
+          <p>Mr. K looks through it carefully. "This is genuinely helpful," he says. "I can see the essay evolving. And the quiz session is clearly a different kind of use."</p>
+          <p>He marks it resolved. Then he adds, a little uncomfortable: "For what it's worth — the tool flagged you partly because you write in clear, organized sentences with complex structure. It reads as statistically AI-like." He pauses. "I know how that sounds."</p>
+          <p>You leave the meeting more annoyed at AI detection tools than at Mr. K.</p>
+        `,
+        reflection: `
+          <p><strong>AI detection tools are not reliable.</strong> Most researchers in this space say so. They flag good writers, non-native English speakers, and clear thinkers at higher rates — which is a specific kind of irony.</p>
+          <p>Documenting your process — keeping notes, saving drafts — protects you. Not because you're planning to get caught, but because the ability to show your work is the clearest demonstration that the work is yours.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Showed your drafts and notes; resolved without penalty'
+      },
+
+      defend_tool: {
+        badge: { type: 'complicated', label: '→ You challenge the tool' },
+        narrative: `
+          <p>"These tools have been widely debunked," you say. "There are peer-reviewed studies showing they produce false positives at high rates, especially for strong writers. This can't be the only evidence."</p>
+          <p>Mr. K listens. He looks slightly impressed, slightly caught off guard.</p>
+          <p>"That's... actually accurate," he says. "But I still need to understand your process."</p>
+          <p>You realize that being right about the tool's flaws is a different argument than proving the essay is yours. The first one is defensive. The second one requires evidence.</p>
+          <p>You end up having to show your drafts anyway. The conversation goes fine — but it took longer to get there, and Mr. K's initial read of you as defensive rather than transparent slowed things down.</p>
+        `,
+        reflection: `
+          <p>You were correct. AI detectors are not reliable, and calling that out was fair. <strong>Being right about the tool, though, doesn't prove you wrote the essay.</strong></p>
+          <p>Leading with "your system is broken" and following with evidence tends to feel more adversarial than leading with "here's what my process looked like." Same outcome — probably. Different relationship with the teacher afterward.</p>
+        `,
+        reflectionType: 'neutral',
+        choiceLabel: 'Challenged the tool\'s accuracy — correct but adversarial'
+      },
+
+      explain_distinction: {
+        badge: { type: 'good', label: '→ You explain the distinction' },
+        narrative: `
+          <p>"I used AI to quiz myself on the themes before I started writing — I basically asked it to give me hard questions about Hamlet so I could check my own understanding. But I wrote the essay myself. I can show you the chat history from the quiz."</p>
+          <p>Mr. K pauses. "That's a distinction I haven't thought about explicitly. Can you show me the quiz session?"</p>
+          <p>You show him. It's clearly different from writing — a list of questions, your typed practice answers, some back-and-forth about specific scenes. He accepts it.</p>
+          <p>A week later, Mr. K updates the class: AI for studying is explicitly permitted. AI for writing is not. He's going to put that in writing going forward.</p>
+          <p>Your situation turned into a policy clarification for your whole class.</p>
+        `,
+        reflection: `
+          <p>Naming the distinction — studying vs. producing — is useful not just in this situation but as a general framework. <strong>Using AI to test your understanding is categorically different from using AI to generate your deliverable.</strong></p>
+          <p>Your honest answer had effects beyond you. That's an underrated dynamic: individual conversations about gray areas often become the basis for clearer norms.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Explained study vs. production distinction; influenced class policy'
+      },
+
+      ask_process: {
+        badge: { type: 'neutral', label: '→ You pause first' },
+        narrative: `
+          <p>"Before I say anything, can you walk me through what happens next? Like, what's the actual process here?"</p>
+          <p>Mr. K blinks. "That's... a fair question actually." He explains: first he talks to you, then if there's a dispute, it goes to the department head, then there's a formal review process with a chance to appeal. A first offense with no prior history is typically a rewrite, not a grade-level penalty.</p>
+          <p>Now that you understand the stakes, you explain everything: the quiz session, the drafts, the timeline. You offer to show your Drive.</p>
+          <p>It resolves fine. And you made a decision with full information instead of reacting under pressure.</p>
+        `,
+        reflection: `
+          <p>Asking about process before answering is a thing lawyers, doctors, and anyone in a high-stakes situation learns to do. <strong>Understanding what's actually at risk helps you calibrate your response.</strong></p>
+          <p>It can read as evasive if done poorly. Here it read as composed. The difference is usually tone — curious vs. defensive.</p>
+        `,
+        reflectionType: 'good',
+        choiceLabel: 'Asked about process first; resolved with full information'
+      },
+    }
+  }
+];
+
+// ══ Game State ══
+let state = {
+  scenarioIndex: 0,
+  nodeId: 'start',
+  phase: 'choosing', // 'choosing' | 'consequence'
+  pathLog: []
+};
+
+// ══ UI Helpers ══
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+function fadeIn(el) {
+  el.classList.remove('fade-in');
+  void el.offsetWidth; // reflow
+  el.classList.add('fade-in');
+}
+
+function updateDots() {
+  for (let i = 0; i < 3; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = 'dot';
+    if (i < state.scenarioIndex) dot.classList.add('done');
+    else if (i === state.scenarioIndex) dot.classList.add('active');
+  }
+}
+
+// ══ Core Rendering ══
+function getCurrentScenario() { return SCENARIOS[state.scenarioIndex]; }
+function getCurrentNode() { return getCurrentScenario().nodes[state.nodeId]; }
+
+function renderScenarioHeader() {
+  const s = getCurrentScenario();
+  document.getElementById('scenario-label').textContent = `Scenario ${state.scenarioIndex + 1} of 3`;
+  document.getElementById('scenario-title').textContent = s.title;
+  document.getElementById('scenario-context').textContent = s.context;
+  updateDots();
+}
+
+function renderNode() {
+  const node = getCurrentNode();
+  const container = document.getElementById('node-content');
+
+  if (state.phase === 'choosing') {
+    container.innerHTML = `
+      <div class="narrative-card fade-in">
+        ${node.narrative}
+      </div>
+      <div class="choices-label">What do you do?</div>
+      <div class="choices">
+        ${node.choices.map((c, i) => `
+          <button class="choice-btn" onclick="makeChoice(${i})">
+            <span class="choice-letter">${c.letter || String.fromCharCode(65 + i)}</span>
+            <span>${c.text}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  } else if (state.phase === 'consequence') {
+    const badgeClass = node.badge ? node.badge.type : 'neutral';
+    const badgeLabel = node.badge ? node.badge.label : '';
+    const reflectionClass = node.reflectionType || 'neutral';
+
+    container.innerHTML = `
+      <div class="consequence-card fade-in">
+        ${node.badge ? `<div class="outcome-badge ${badgeClass}">${badgeLabel}</div>` : ''}
+        ${node.narrative}
+      </div>
+      <div class="reflection-card fade-in">
+        <div class="reflection-header">
+          <span class="reflection-label">Worth thinking about</span>
+        </div>
+        ${node.reflection}
+      </div>
+      <div class="nav-row">
+        ${getNextButton()}
+      </div>
+    `;
+  }
+
+  fadeIn(container);
+}
+
+function getNextButton() {
+  const isLastScenario = state.scenarioIndex >= SCENARIOS.length - 1;
+
+  if (isLastScenario) {
+    return `<button class="btn-primary" onclick="showEnd()">See your path →</button>`;
+  } else {
+    return `<button class="btn-primary" onclick="nextScenario()">Next scenario →</button>`;
+  }
+}
+
+function makeChoice(choiceIndex) {
+  const node = getCurrentNode();
+
+  if (node.choices && node.choices[choiceIndex]) {
+    const choice = node.choices[choiceIndex];
+    state.nodeId = choice.next;
+    state.phase = 'choosing';
+
+    const nextNode = getCurrentNode();
+    // If next node has choices, stay in choosing; else it's a consequence node
+    if (!nextNode.choices) {
+      state.phase = 'consequence';
+      // Log this endpoint
+      state.pathLog.push({
+        scenario: getCurrentScenario().title,
+        label: nextNode.choiceLabel || choice.text
+      });
+    }
+
+    renderNode();
+    window.scrollTo({ top: document.getElementById('node-content').offsetTop - 80, behavior: 'smooth' });
+  } else if (node.choices === undefined) {
+    // Already at a consequence node, shouldn't get here
+  }
+}
+
+function nextScenario() {
+  // Move progress dot
+  const prevDot = document.getElementById(`dot-${state.scenarioIndex}`);
+  prevDot.className = 'dot done';
+
+  state.scenarioIndex++;
+  state.nodeId = 'start';
+  state.phase = 'choosing';
+
+  renderScenarioHeader();
+  renderNode();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showEnd() {
+  hide('game');
+  show('end');
+
+  const pathList = document.getElementById('path-list');
+  pathList.innerHTML = state.pathLog.map((p, i) => `
+    <div class="path-item">
+      <span class="scenario-num">0${i + 1}</span>
+      <div>
+        <div style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.2rem;">${p.scenario}</div>
+        <div>${p.label}</div>
+      </div>
+    </div>
+  `).join('');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══ Entry points ══
+function startGame() {
+  hide('intro');
+  show('game');
+  renderScenarioHeader();
+  renderNode();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restartGame() {
+  state = { scenarioIndex: 0, nodeId: 'start', phase: 'choosing', pathLog: [] };
+  hide('end');
+  show('game');
+  renderScenarioHeader();
+  renderNode();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Handle intermediate choosing nodes (when a consequence node has sub-choices)
+// The engine already handles this naturally since makeChoice checks for choices on the next node
+// But we need to handle the case where a consequence node's narrative leads to more choices
+function renderConsequenceWithChoices() {
+  // handled inline in renderNode
+}
+
+// Fix: properly handle nodes that have choices but are consequence-style (mid-branching)
+// Re-hook makeChoice for consequence nodes that have sub-choices
+const _originalMakeChoice = makeChoice;
+// Override to handle mid-branch choosing nodes
+window.makeChoice = function(choiceIndex) {
+  const node = getCurrentNode();
+  if (!node.choices) return;
+
+  const choice = node.choices[choiceIndex];
+  state.nodeId = choice.next;
+
+  const nextNode = getCurrentNode();
+  if (nextNode.choices) {
+    state.phase = 'choosing';
+  } else {
+    state.phase = 'consequence';
+    state.pathLog.push({
+      scenario: getCurrentScenario().title,
+      label: nextNode.choiceLabel || choice.text
+    });
+  }
+
+  renderNode();
+  window.scrollTo({ top: document.getElementById('node-content').offsetTop - 80, behavior: 'smooth' });
+};
+</script>
+</body>
+</html>
