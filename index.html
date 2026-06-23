@@ -486,10 +486,10 @@
     <p class="subtitle">Three scenarios. No obvious answers. About 10 minutes.</p>
 
     <div class="intro-body">
-      <p>Let's skip the part where we pretend AI doesn't exist.</p>
-      <p>You're going to use it. You probably already have. Most of your teachers use it too. The question isn't <strong>"AI: yes or no?"</strong> — that ship sailed before this school year started.</p>
+      <p>We all know that AI is a constant presence in schools.</p>
+      <p>Maybe you use it regularly, maybe you don't. Most of your teachers probably use it too. The question isn't <strong>"AI: yes or no?"</strong> — that isn't the debate anymore.</p>
       <p>The more interesting question is: <strong>what are you actually trying to get out of school?</strong> And how does the easy route intersect with that?</p>
-      <p>This isn't a quiz with right answers baked in. It's a few scenarios — things that could actually happen to you this year — where you make choices and see where they lead. There are no gotcha moments. No pop-up that says "WRONG! Academic integrity means..." These situations are genuinely complicated, and we think you're smart enough to figure out where your own lines are.</p>
+      <p>This isn't a quiz with right answers baked in. It's a few scenarios — things that could actually happen to you this year — where you make choices and see where they lead. There isn't any preaching. No pop-up that says "WRONG! Academic integrity means..." These situations are genuinely complicated, and we think you're smart enough to figure out where your own lines are.</p>
     </div>
 
     <div class="meta-row">
@@ -537,9 +537,8 @@
     </div>
 
     <div class="final-thought">
-      <p><strong>The thing no one says out loud:</strong> AI doesn't make the hard part of school easier. The hard part of school was never the writing — it was figuring out what you actually think. The essay was just the proof of work.</p>
+      <p><strong>The thing no one says out loud:</strong> AI can't make the hard part of school easier. The hard part of school was never the writing — it was figuring out what you actually think. The essay was just the proof of work.</p>
       <p>AI can absolutely help you learn, organize, and edit. It can also let you skip the uncomfortable stretch of not-knowing-yet. That stretch is where most of the actual learning happens.</p>
-      <p>The fact that you're here, thinking about this, already puts you ahead of "just don't get caught." That's not nothing.</p>
     </div>
 
     <div style="margin-top: 2rem;">
@@ -564,7 +563,7 @@ const SCENARIOS = [
     nodes: {
       start: {
         narrative: `
-          <p>You've read the chapters. You understand the material — kind of. But every time you try to start writing, you end up rereading your notes instead. Two hours in, you've typed exactly one sentence.</p>
+          <p>You've read the chapters. And you mostly understand this material. But every time you try to start writing, you end up rereading your notes instead. Two hours in, you've typed one sentence.</p>
           <p>Almost without deciding to, you open an AI chatbot and type:</p>
           <div class="chat-bubble">What were the main causes of WWI?</div>
           <div class="chat-bubble ai">The causes of WWI are often summarized with the acronym MAIN: Militarism, Alliance Systems, Imperialism, and Nationalism. Additionally, the immediate trigger was the assassination of Archduke Franz Ferdinand in Sarajevo in June 1914...</div>
@@ -575,14 +574,14 @@ const SCENARIOS = [
           { text: 'Close the tab. You get it now — write your own outline from scratch.', next: 'informed_start', letter: 'A' },
           { text: 'Copy the AI\'s structure into your doc and fill it with your own analysis.', next: 'copy_structure', letter: 'B' },
           { text: 'Ask the AI to write one full paragraph, just to see what it looks like.', next: 'first_paragraph', letter: 'C' },
-          { text: 'Text your teacher: "Is using AI for outlining okay?" before doing anything.', next: 'ask_teacher', letter: 'D' },
+          { text: 'Email your teacher: "Is using AI for outlining okay?" before doing anything.', next: 'ask_teacher', letter: 'D' },
         ]
       },
 
       informed_start: {
         badge: { type: 'neutral', label: '→ You close the tab' },
         narrative: `
-          <p>The outline exists in your head now, not in a doc. You write your own structure — some of it matches what the AI said, some doesn't. You catch yourself having opinions about which angle to lead with.</p>
+          <p>The outline exists in your head now, not in a doc. You write your own structure — some of it matches what the AI said, some doesn't. You realize you are having your own opinions about which angle to lead with.</p>
           <p>The next 48 hours are genuinely hard. Around hour three, something shifts: it stops being <em>the paper</em> and starts being <em>your paper</em>. You know why you organized it the way you did.</p>
           <p>You turn it in. It's not perfect. You feel okay about it.</p>
         `,
@@ -657,7 +656,7 @@ const SCENARIOS = [
       ask_teacher: {
         badge: { type: 'good', label: '→ You text your teacher first' },
         narrative: `
-          <p>Your teacher responds within the hour — apparently they were still grading. "Great question. Using AI to understand a topic is fine — that's basically what textbooks and search engines are for. Using AI to structure <em>your</em> argument is more complicated. Come talk to me before class."</p>
+          <p>Your teacher responds within the hour — apparently they were still grading. "Great question. First, check the assignment to see what AI usage level I gave it. Bearing that in mind, using AI to structure <em>your</em> argument is more complicated. Come talk to me before class."</p>
           <p>You have that conversation. Your teacher draws a distinction between <em>AI as a tool for understanding</em> versus <em>AI as a tool for producing</em>, and admits — somewhat surprisingly — that the line isn't always obvious even to them.</p>
           <p>You go into the paper with a clearer sense of what's yours to figure out. The outline you write is yours. The thesis is yours. You actually end up enjoying the paper more because you're not second-guessing every sentence.</p>
         `,
@@ -683,12 +682,12 @@ const SCENARIOS = [
         narrative: `
           <p>You open the shared Google Doc to add your section. Your section on carbon markets is done — solid, in your own words. You scroll to check the overall flow.</p>
           <p>You get to your teammate Alex's section on international agreements. Three dense paragraphs. Zero typos. Sophisticated vocabulary and a weirdly passive sentence structure. You've known Alex since 8th grade. This doesn't sound like Alex.</p>
-          <p>You copy a sentence and start to paste it into a Google search. You don't actually need to finish — you know.</p>
+          <p>You copy a sentence and start to paste it into a Google search. You don't actually need to finish — you know it is AI generated.</p>
           <p>The paper is due in 9 hours. What do you do?</p>
         `,
         choices: [
           { text: 'Leave it. Alex made their choice; you made yours. Not your problem.', next: 'leave_it', letter: 'A' },
-          { text: 'Text Alex: "Hey, this section looks different from your usual writing. Everything okay?"', next: 'text_alex', letter: 'B' },
+          { text: 'Text Alex: "Hey, this section looks different from your usual writing. Did you do something different?"', next: 'text_alex', letter: 'B' },
           { text: 'Delete Alex\'s section. Leave a comment: "rewrote this, tell me if you hate it."', next: 'delete_section', letter: 'C' },
           { text: 'Email your teacher tonight to explain the situation.', next: 'email_teacher', letter: 'D' },
         ]
@@ -701,7 +700,7 @@ const SCENARIOS = [
           <p>Two weeks later, you get a 71 on the project. The teacher's comment: <em>"One section appears to have been AI-generated. Group penalty applied."</em></p>
           <p>The whole group.</p>
           <p>You're furious at Alex. But you sit with it for a moment: you knew. At 11pm, you knew. You made a choice — you just made it by not choosing.</p>
-          <p>Alex apologizes in the group chat with the weakest "sorry guys" you've ever seen. The other teammate, Jordan, isn't speaking to either of you.</p>
+          <p>Alex apologizes in the group chat with "sorry guys". The other teammate, Jordan, isn't speaking to either of you.</p>
         `,
         reflection: `
           <p>There's a specific kind of complicity in knowing and saying nothing. <strong>It's not the same as doing it</strong> — but "I didn't do it" and "I didn't stop it when I could have" are different defenses.</p>
@@ -714,10 +713,10 @@ const SCENARIOS = [
       text_alex: {
         badge: { type: 'complicated', label: '→ You text Alex' },
         narrative: `
-          <div class="chat-bubble">hey — your section looks different from how you usually write. everything okay?</div>
-          <div class="chat-bubble ai">oh god. is it that obvious</div>
+          <div class="chat-bubble">hey — your section looks different from how you usually write. Did you do something different?</div>
+          <div class="chat-bubble ai">is it that obvious</div>
           <div class="chat-bubble">...yeah</div>
-          <div class="chat-bubble ai">I've had the worst week. my parents are fighting and I just. I don't know. I panicked</div>
+          <div class="chat-bubble ai">I've had the worst week. i had practice every night and a game and I just. I don't know. I ran out of time</div>
           <p>You end up writing Alex's section for them. It takes you 45 minutes. The section is worse than the AI's version — you're not an expert on international agreements. But it's real.</p>
           <p>The project gets a B. The teacher comments that the sections feel uneven. Alex is grateful, then awkward about it, then normal again after a few weeks.</p>
           <p>You helped a friend. You also did something ethically complicated. Both things are true.</p>
@@ -752,7 +751,7 @@ const SCENARIOS = [
         narrative: `
           <p>You write a careful email: you noticed a section that doesn't look like your teammate's usual writing, you're not sure what to do, you wanted to flag it before submitting.</p>
           <p>Your teacher reads it at 6am and contacts Alex before class. The whole group gets a 24-hour extension. Alex rewrites the section. Your teacher asks to meet with Alex separately.</p>
-          <p>Alex finds out you emailed. It's bad. Really bad, for a while. Alex calls it a "betrayal" in a way that makes you wonder if you were wrong. Jordan, on the other hand, quietly thanks you.</p>
+          <p>Alex finds out you emailed. It's not a good conversation. Alex calls it a "betrayal" in a way that makes you wonder if you were wrong. Jordan, on the other hand, quietly thanks you.</p>
           <p>The project gets a B+. The situation with Alex takes about a month to stop being weird.</p>
         `,
         reflection: `
@@ -776,7 +775,7 @@ const SCENARIOS = [
       start: {
         narrative: `
           <p>You wrote this essay. You know you wrote it — three days of actual work, two full drafts, a thesis you're kind of proud of. You used AI to quiz yourself on the themes beforehand ("give me three hard questions about Hamlet's psychology") but the writing is completely yours.</p>
-          <p>Your teacher, Mr. K, is being fair about it. He says he's not accusing you, just needs to have a conversation. But there's a consequence on the table if a policy violation is found.</p>
+          <p>Your teacher is being fair about it. He says he's not accusing you, just needs to have a conversation. But there's a consequence on the table if a policy violation is found.</p>
           <p>You're confused, then annoyed, then nervous — in that order.</p>
           <p>How do you respond?</p>
         `,
@@ -792,9 +791,9 @@ const SCENARIOS = [
         badge: { type: 'good', label: '→ You show your receipts' },
         narrative: `
           <p>You open your Drive on your phone. There's a doc with scratch notes from three days ago, timestamps visible. A second doc with an ugly first draft. And a chat history from your AI quiz session — clearly different from writing: just questions and your typed-out answers as practice.</p>
-          <p>Mr. K looks through it carefully. "This is genuinely helpful," he says. "I can see the essay evolving. And the quiz session is clearly a different kind of use."</p>
+          <p>The teacher looks through it carefully. "This is genuinely helpful," he says. "I can see the essay evolving. And the quiz session is clearly a different kind of use."</p>
           <p>He marks it resolved. Then he adds, a little uncomfortable: "For what it's worth — the tool flagged you partly because you write in clear, organized sentences with complex structure. It reads as statistically AI-like." He pauses. "I know how that sounds."</p>
-          <p>You leave the meeting more annoyed at AI detection tools than at Mr. K.</p>
+          <p>You leave the meeting more annoyed at AI detection tools than at your teacher.</p>
         `,
         reflection: `
           <p><strong>AI detection tools are not reliable.</strong> Most researchers in this space say so. They flag good writers, non-native English speakers, and clear thinkers at higher rates — which is a specific kind of irony.</p>
@@ -808,10 +807,10 @@ const SCENARIOS = [
         badge: { type: 'complicated', label: '→ You challenge the tool' },
         narrative: `
           <p>"These tools have been widely debunked," you say. "There are peer-reviewed studies showing they produce false positives at high rates, especially for strong writers. This can't be the only evidence."</p>
-          <p>Mr. K listens. He looks slightly impressed, slightly caught off guard.</p>
+          <p>Your teacher listens. He looks slightly impressed, slightly caught off guard.</p>
           <p>"That's... actually accurate," he says. "But I still need to understand your process."</p>
           <p>You realize that being right about the tool's flaws is a different argument than proving the essay is yours. The first one is defensive. The second one requires evidence.</p>
-          <p>You end up having to show your drafts anyway. The conversation goes fine — but it took longer to get there, and Mr. K's initial read of you as defensive rather than transparent slowed things down.</p>
+          <p>You end up having to show your drafts anyway. The conversation goes fine — but it took longer to get there, and your teacher's initial read of you as defensive rather than transparent slowed things down.</p>
         `,
         reflection: `
           <p>You were correct. AI detectors are not reliable, and calling that out was fair. <strong>Being right about the tool, though, doesn't prove you wrote the essay.</strong></p>
@@ -825,9 +824,9 @@ const SCENARIOS = [
         badge: { type: 'good', label: '→ You explain the distinction' },
         narrative: `
           <p>"I used AI to quiz myself on the themes before I started writing — I basically asked it to give me hard questions about Hamlet so I could check my own understanding. But I wrote the essay myself. I can show you the chat history from the quiz."</p>
-          <p>Mr. K pauses. "That's a distinction I haven't thought about explicitly. Can you show me the quiz session?"</p>
+          <p>Your teacher pauses. "That's a distinction I haven't thought about explicitly. Can you show me the quiz session?"</p>
           <p>You show him. It's clearly different from writing — a list of questions, your typed practice answers, some back-and-forth about specific scenes. He accepts it.</p>
-          <p>A week later, Mr. K updates the class: AI for studying is explicitly permitted. AI for writing is not. He's going to put that in writing going forward.</p>
+          <p>A week later, your teacher updates the class: AI for studying is explicitly permitted. AI for writing is not. He's going to put that in writing going forward.</p>
           <p>Your situation turned into a policy clarification for your whole class.</p>
         `,
         reflection: `
@@ -842,8 +841,8 @@ const SCENARIOS = [
         badge: { type: 'neutral', label: '→ You pause first' },
         narrative: `
           <p>"Before I say anything, can you walk me through what happens next? Like, what's the actual process here?"</p>
-          <p>Mr. K blinks. "That's... a fair question actually." He explains: first he talks to you, then if there's a dispute, it goes to the department head, then there's a formal review process with a chance to appeal. A first offense with no prior history is typically a rewrite, not a grade-level penalty.</p>
-          <p>Now that you understand the stakes, you explain everything: the quiz session, the drafts, the timeline. You offer to show your Drive.</p>
+          <p>Your teacher explains the process of a potential honor code violation to you.</p>
+          <p>You explain everything: the quiz session, the drafts, the timeline. You offer to show your Drive.</p>
           <p>It resolves fine. And you made a decision with full information instead of reacting under pressure.</p>
         `,
         reflection: `
